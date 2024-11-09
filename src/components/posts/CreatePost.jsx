@@ -1,11 +1,17 @@
-import React from "react";
+import React, { useState } from "react";
 import { useFormik } from "formik";
+import ReactQuill from "react-quill";
 import * as Yup from "yup";
+
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+
 import { createPostAPI } from "../../services/posts/postAPI";
+
+import "react-quill/dist/quill.snow.css";
 
 const CreatePost = () => {
   const queryClient = useQueryClient();
+  const [description, setDescription] = useState("");
 
   const {
     mutate: createPost,
@@ -34,11 +40,9 @@ const CreatePost = () => {
 
   const formik = useFormik({
     initialValues: {
-      title: "",
       description: "",
     },
     validationSchema: Yup.object({
-      title: Yup.string().required("Title is required"),
       description: Yup.string().required("Description is required"),
     }),
     onSubmit: (values) => {
@@ -50,22 +54,23 @@ const CreatePost = () => {
     <div>
       {isPending && <p>Loading...</p>}
       {isSuccess && <p>{data.message}</p>}
-      {isError && <p>{error.message}</p>}
+      {isError && <p>{error.response.data.message}</p>}
       <form onSubmit={formik.handleSubmit}>
-        <input
-          type="text"
-          name="title"
-          placeholder="Enter Title"
-          {...formik.getFieldProps("title")}
-        />
-        {formik.touched.title && formik.errors.title && (
-          <span>{formik.errors.title}</span>
-        )}
-        <input
-          type="text"
-          name="description"
-          placeholder="Enter Description"
-          {...formik.getFieldProps("description")}
+        <ReactQuill
+          value={formik.values.description}
+          onChange={(values) => {
+            setDescription(values);
+            formik.setFieldValue("description", values);
+          }}
+          modules={{
+            toolbar: [
+              [{ header: [1, 2, false] }],
+              ["bold", "italic", "underline", "strike", "blockquote"],
+              [{ list: "ordered" }, { list: "bullet" }],
+              ["link"],
+              // ["clean"],
+            ],
+          }}
         />
         {formik.touched.description && formik.errors.description && (
           <span>{formik.errors.description}</span>

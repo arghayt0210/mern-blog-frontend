@@ -25,8 +25,7 @@ export default function PostsList() {
     <div>
       {data?.data?.map((post) => (
         <div key={post._id}>
-          <h2>{post.title}</h2>
-          <p>{post.description}</p>
+          <div dangerouslySetInnerHTML={{ __html: post.description }} />
           <Link to={`/posts/${post._id}`}>Edit</Link>
           <button onClick={() => deletePostMutation.mutate(post._id)}>
             Delete
