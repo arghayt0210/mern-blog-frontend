@@ -5,9 +5,11 @@ import PublicNavbar from "./PublicNavbar";
 
 export default function Container({ children }) {
   return (
-    <div>
+    <div className="overflow-hidden scrollbar-none">
       <PublicNavbar />
-      {children}
+      <div className="max-w-2xl mx-auto px-4 py-8 h-[calc(100vh-90px)] overflow-y-auto scrollbar-none">
+        {children}
+      </div>
     </div>
   );
 }

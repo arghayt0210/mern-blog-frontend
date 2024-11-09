@@ -1,14 +1,30 @@
 import axios from "axios";
+import qs from "qs";
 
-const BASE_URL = "http://localhost:5000/api/v1/posts";
+export const BASE_URL = "http://localhost:5000/api/v1/posts";
 
 export const createPostAPI = async (postData) => {
   const response = await axios.post(`${BASE_URL}/create`, postData);
   return response.data;
 };
 
-export const fetchAllPostsAPI = async () => {
-  const response = await axios.get(BASE_URL);
+export const fetchAllPostsAPI = async (pageParam) => {
+  console.log("pageParam: ", pageParam);
+  // Filter out null/undefined values
+  const filteredParams = Object.fromEntries(
+    Object.entries({ ...pageParam, limit: 2 }).filter(
+      ([_, value]) => value != null
+    )
+  );
+  console.log("filteredParams: ", filteredParams);
+
+  // Build query string using qs
+  const queryString = qs.stringify(filteredParams, {
+    skipNulls: true,
+    addQueryPrefix: true, // This adds the ? automatically
+  });
+
+  const response = await axios.get(`${BASE_URL}${queryString}`);
   return response.data;
 };
 

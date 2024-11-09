@@ -13,11 +13,20 @@ export function useDeletePostMutation() {
       await queryClient.cancelQueries(queryFilter);
       queryClient.setQueriesData(queryFilter, (oldData) => {
         if (!oldData) return;
+
+        console.log("oldData: ", oldData);
+        console.log("deletedPost: ", deletedPost);
         return {
           ...oldData,
-          data: oldData.data.filter(
-            (post) => post._id !== deletedPost.data._id
-          ),
+          pages: oldData.pages.map((page) => ({
+            ...page,
+            data: {
+              ...page.data,
+              posts: page.data.posts.filter(
+                (p) => p._id !== deletedPost.data._id
+              ),
+            },
+          })),
         };
       });
 

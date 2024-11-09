@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  /* Hide scrollbar for Chrome, Safari and Opera */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Hide scrollbar for IE, Edge and Firefox */
+  .no-scrollbar {
+    -ms-overflow-x: hidden; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+}
+
+/* Apply to html and body */
+html,
+body {
+  @apply scrollbar-none overflow-y-auto;
+}
+
+.ql-container {
+  min-height: 200px;
+  border-bottom-left-radius: 0.5rem;
+  border-bottom-right-radius: 0.5rem;
+}
+
+.ql-toolbar {
+  border-top-left-radius: 0.5rem;
+  border-top-right-radius: 0.5rem;
+  background-color: #f9fafb;
+  border-color: #e5e7eb;
+}
+
+.ql-editor {
+  min-height: 200px;
+}

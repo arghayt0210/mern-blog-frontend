@@ -13,10 +13,13 @@ export function useUpdatePostMutation() {
       await queryClient.cancelQueries(queryFilter);
       queryClient.setQueriesData(queryFilter, (oldData) => {
         if (!oldData) return;
-        return {
-          ...oldData,
-          data: updatedPost.data,
-        };
+
+        console.log("oldData: ", oldData);
+        console.log("updatedPost: ", updatedPost);
+        // return {
+        //   ...oldData,
+        //   data: updatedPost.data,
+        // };
       });
 
       // toast({
