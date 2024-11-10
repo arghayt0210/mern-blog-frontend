@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useFormik } from "formik";
 import ReactQuill from "react-quill";
 import * as Yup from "yup";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import ImageUpload from "../shared/ImageUpload";
 
 import { createPostAPI } from "../../services/posts/postAPI";
 
@@ -48,16 +49,25 @@ const CreatePost = () => {
   const formik = useFormik({
     initialValues: {
       description: "",
+      image: null,
     },
     validationSchema: Yup.object({
       description: Yup.string().required("Description is required"),
+      image: Yup.mixed(),
     }),
     onSubmit: (values) => {
-      createPost(values);
+      const formData = new FormData();
+      formData.append("description", values.description);
+      if (values.image) {
+        formData.append("image", values.image);
+      }
+      createPost(formData);
     },
   });
 
-  console.log(isError);
+  const handleImageChange = (file) => {
+    formik.setFieldValue("image", file);
+  };
 
   return (
     <div>
@@ -85,6 +95,8 @@ const CreatePost = () => {
       )}
 
       <form onSubmit={formik.handleSubmit} className="space-y-6">
+        {/* Image Upload Section */}
+        <ImageUpload initialImage={null} onImageChange={handleImageChange} />
         <div>
           <ReactQuill
             value={formik.values.description}

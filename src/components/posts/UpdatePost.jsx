@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import * as Yup from "yup";
 
 import { useQuery } from "@tanstack/react-query";
+import ImageUpload from "../shared/ImageUpload";
 
 import { fetchPostByIdAPI } from "../../services/posts/postAPI";
 import { useUpdatePostMutation } from "../hooks/useUpdatePostMutation";
@@ -31,6 +32,7 @@ export default function UpdatePost() {
   const formik = useFormik({
     initialValues: {
       description: data?.data?.description || "",
+      image: null,
     },
     enableReinitialize: true,
     validationSchema: Yup.object({
@@ -38,8 +40,13 @@ export default function UpdatePost() {
     }),
     // NOTE : you can pass onSuccess and onError in mutate function
     onSubmit: (values) => {
+      const formData = new FormData();
+      formData.append("description", values.description);
+      if (values.image) {
+        formData.append("image", values.image);
+      }
       mutation.mutate(
-        { postId: params.postId, payload: values },
+        { postId: params.postId, payload: formData },
         {
           onSuccess: (data) => {
             // NOTE : you can reset form here
@@ -48,6 +55,10 @@ export default function UpdatePost() {
       );
     },
   });
+
+  const handleImageChange = (file) => {
+    formik.setFieldValue("image", file);
+  };
 
   if (isPending) {
     return (
@@ -93,61 +104,85 @@ export default function UpdatePost() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white px-4 py-12">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen bg-gray-50 py-12">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">Edit Post</h1>
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-gray-900">Edit Post</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            Update your post content and image
+          </p>
         </div>
 
         {/* Status Messages */}
-        {mutation.isPending && (
-          <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 mb-6 flex items-center">
-            <div className="animate-spin h-5 w-5 border-2 border-blue-600 rounded-full border-t-transparent mr-3"></div>
-            <p className="text-blue-700">Updating your post...</p>
-          </div>
-        )}
-        {mutation.isError && (
-          <div className="bg-red-50 border border-red-200 rounded-xl p-4 mb-6 flex items-center">
-            <svg
-              className="h-5 w-5 text-red-400 mr-3"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <p className="text-red-700">{mutation.error.message}</p>
-          </div>
-        )}
-        {mutation.isSuccess && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6 flex items-center">
-            <svg
-              className="h-5 w-5 text-green-400 mr-3"
-              viewBox="0 0 20 20"
-              fill="currentColor"
-            >
-              <path
-                fillRule="evenodd"
-                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                clipRule="evenodd"
-              />
-            </svg>
-            <p className="text-green-700">{mutation.data.message}</p>
-          </div>
-        )}
+        <div className="mb-6">
+          {mutation.isPending && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 flex items-center">
+              <div className="animate-spin h-5 w-5 border-2 border-blue-600 rounded-full border-t-transparent mr-3"></div>
+              <p className="text-blue-700">Updating your post...</p>
+            </div>
+          )}
+          {mutation.isError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center">
+              <svg
+                className="h-5 w-5 text-red-400 mr-3"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p className="text-red-700">{mutation.error.message}</p>
+            </div>
+          )}
+          {mutation.isSuccess && (
+            <div className="bg-green-50 border border-green-200 rounded-lg p-4 flex items-center">
+              <svg
+                className="h-5 w-5 text-green-400 mr-3"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <p className="text-green-700">{mutation.data.message}</p>
+            </div>
+          )}
+        </div>
 
-        <form onSubmit={formik.handleSubmit} className="space-y-6">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-            <div className="border-b border-gray-200 bg-gray-50 px-4 py-3">
-              <h2 className="text-sm font-medium text-gray-700">
+        <form onSubmit={formik.handleSubmit} className="space-y-8">
+          {/* Image Upload Section */}
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <p className="mt-1 text-sm text-gray-500">
+                Add a cover image to your post
+              </p>
+            </div>
+            <div className="p-6">
+              <ImageUpload
+                initialImage={data?.data?.image?.path}
+                onImageChange={handleImageChange}
+              />
+            </div>
+          </div>
+
+          {/* Content Section */}
+          <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div className="px-6 py-4 border-b border-gray-200">
+              <h2 className="text-lg font-medium text-gray-900">
                 Post Content
               </h2>
+              <p className="mt-1 text-sm text-gray-500">
+                Write your post content using the editor below
+              </p>
             </div>
-            <div className="p-4">
+            <div className="p-6">
               <ReactQuill
                 value={formik.values.description}
                 onChange={(values) => {
@@ -164,34 +199,33 @@ export default function UpdatePost() {
                 }}
                 className="min-h-[300px] bg-white"
               />
+              {formik.touched.description && formik.errors.description && (
+                <div className="mt-2 text-sm text-red-600">
+                  {formik.errors.description}
+                </div>
+              )}
             </div>
           </div>
 
-          {formik.touched.description && formik.errors.description && (
-            <div className="rounded-lg bg-red-50 p-4">
-              <span className="text-sm text-red-600">
-                {formik.errors.description}
-              </span>
-            </div>
-          )}
-
-          <div className="flex justify-end gap-4">
+          {/* Action Buttons */}
+          <div className="flex justify-end gap-4 pt-4">
             <button
               type="button"
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg
+              className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg
                        hover:bg-gray-50 transition-colors duration-200
-                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+                       focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500
+                       text-sm font-medium"
               onClick={() => window.history.back()}
             >
               Cancel
             </button>
             <button
               type="submit"
-              className="px-6 py-3 bg-blue-600 text-white rounded-lg
+              className="px-6 py-2.5 bg-blue-600 text-white rounded-lg
                        hover:bg-blue-700 transition-colors duration-200
                        disabled:bg-blue-300 disabled:cursor-not-allowed
                        focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500
-                       flex items-center space-x-2"
+                       flex items-center space-x-2 text-sm font-medium"
               disabled={mutation.isPending}
             >
               {mutation.isPending && (

@@ -71,6 +71,17 @@ export default function PostDetails() {
             </div>
           </div>
 
+          {/* Post Image */}
+          {data.data.image.path && (
+            <div className="w-full h-96 overflow-hidden">
+              <img
+                src={data.data.image.path}
+                alt="Post cover"
+                className="w-full h-full object-cover"
+              />
+            </div>
+          )}
+
           {/* Post Content */}
           <div className="px-6 py-4">
             <div

@@ -71,6 +71,15 @@ export default function PostsList() {
             className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer"
             onClick={() => navigate(`/posts/${post._id}`)}
           >
+            {post.image.path && (
+              <div className="w-full h-48 overflow-hidden">
+                <img
+                  src={post.image.path}
+                  alt="Post cover"
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
             <div className="p-6">
               <div
                 className="prose prose-sm max-w-none mb-4"

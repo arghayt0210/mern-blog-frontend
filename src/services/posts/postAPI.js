@@ -4,7 +4,11 @@ import qs from "qs";
 export const BASE_URL = "http://localhost:5000/api/v1/posts";
 
 export const createPostAPI = async (postData) => {
-  const response = await axios.post(`${BASE_URL}/create`, postData);
+  const response = await axios.post(`${BASE_URL}/create`, postData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 
@@ -36,7 +40,12 @@ export const fetchPostByIdAPI = async (postId) => {
 export const updatePostByIdAPI = async (postData) => {
   const response = await axios.put(
     `${BASE_URL}/${postData.postId}`,
-    postData.payload
+    postData.payload,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
   );
   return response.data;
 };
