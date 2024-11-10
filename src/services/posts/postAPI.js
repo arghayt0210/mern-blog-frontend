@@ -1,10 +1,9 @@
-import axios from "axios";
 import qs from "qs";
 
-export const BASE_URL = "http://localhost:5000/api/v1/posts";
+import axiosInstance from "../../utils/axiosInterceptor";
 
 export const createPostAPI = async (postData) => {
-  const response = await axios.post(`${BASE_URL}/create`, postData, {
+  const response = await axiosInstance.post(`/posts/create`, postData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -28,18 +27,18 @@ export const fetchAllPostsAPI = async (pageParam) => {
     addQueryPrefix: true, // This adds the ? automatically
   });
 
-  const response = await axios.get(`${BASE_URL}${queryString}`);
+  const response = await axiosInstance.get(`/posts${queryString}`);
   return response.data;
 };
 
 export const fetchPostByIdAPI = async (postId) => {
-  const response = await axios.get(`${BASE_URL}/${postId}`);
+  const response = await axiosInstance.get(`/posts/${postId}`);
   return response.data;
 };
 
 export const updatePostByIdAPI = async (postData) => {
-  const response = await axios.put(
-    `${BASE_URL}/${postData.postId}`,
+  const response = await axiosInstance.put(
+    `/posts/${postData.postId}`,
     postData.payload,
     {
       headers: {
@@ -50,6 +49,6 @@ export const updatePostByIdAPI = async (postData) => {
   return response.data;
 };
 export const deletePostByIdAPI = async (postId) => {
-  const response = await axios.delete(`${BASE_URL}/${postId}`);
+  const response = await axiosInstance.delete(`/posts/${postId}`);
   return response.data;
 };

@@ -48,7 +48,7 @@ export default function PublicNavbar() {
           </li>
           <li>
             <Link
-              to="/create-account"
+              to="/register"
               className="text-gray-600 hover:text-blue-600 font-medium transition-all duration-300 hover:scale-105"
             >
               Create Account
