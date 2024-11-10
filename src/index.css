@@ -20,20 +20,36 @@ html,
 body {
   @apply scrollbar-none overflow-y-auto;
 }
+.ql-editor {
+  min-height: 200px;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #374151;
+}
 
 .ql-container {
-  min-height: 200px;
-  border-bottom-left-radius: 0.5rem;
-  border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 0.75rem;
+  border-bottom-right-radius: 0.75rem;
+  background: white;
 }
 
 .ql-toolbar {
-  border-top-left-radius: 0.5rem;
-  border-top-right-radius: 0.5rem;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+  border-bottom: none !important;
   background-color: #f9fafb;
-  border-color: #e5e7eb;
 }
 
-.ql-editor {
-  min-height: 200px;
+.ql-toolbar button:hover {
+  color: #2563eb !important;
+}
+
+.ql-toolbar button:focus {
+  outline: 2px solid #93c5fd;
+  outline-offset: 2px;
+}
+
+.ql-editor.ql-blank::before {
+  color: #9ca3af;
+  font-style: normal;
 }

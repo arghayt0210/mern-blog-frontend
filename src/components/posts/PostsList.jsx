@@ -1,6 +1,6 @@
 import React from "react";
 import { FiTrash2 } from "react-icons/fi"; // Import trash icon
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import PostsLoadingSkeleton from "./PostsLoadingSkeleton";
@@ -10,6 +10,7 @@ import { fetchAllPostsAPI } from "../../services/posts/postAPI";
 import { useDeletePostMutation } from "../hooks/useDeletePostMutation";
 
 export default function PostsList() {
+  const navigate = useNavigate();
   const deletePostMutation = useDeletePostMutation();
   const {
     data,
@@ -67,7 +68,8 @@ export default function PostsList() {
         {posts?.map((post) => (
           <div
             key={post._id}
-            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden"
+            className="bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 overflow-hidden cursor-pointer"
+            onClick={() => navigate(`/posts/${post._id}`)}
           >
             <div className="p-6">
               <div
@@ -85,15 +87,23 @@ export default function PostsList() {
               </div>
 
               <div className="flex justify-between items-center mt-4 pt-4 border-t border-gray-100">
-                <Link
-                  to={`/posts/${post._id}`}
+                <button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    navigate(`/update-post/${post._id}`);
+                  }}
                   className="text-blue-500 hover:text-blue-700 font-medium"
                 >
                   Edit
-                </Link>
+                </button>
 
                 <button
-                  onClick={() => deletePostMutation.mutate(post._id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    deletePostMutation.mutate(post._id);
+                  }}
                   className="text-red-500 hover:text-red-700 transition-colors duration-200"
                   aria-label="Delete post"
                 >
